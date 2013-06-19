@@ -2,79 +2,14 @@ use strict;
 use warnings;
 
 package App::Addex::Plugin::Hiveminder;
+{
+  $App::Addex::Plugin::Hiveminder::VERSION = '0.005';
+}
 use 5.006; # our
 use Sub::Install;
 
-=head1 NAME
+# ABSTRACT: automatically add "to Hiveminder.com" addrs
 
-App::Addex::Plugin::Hiveminder - automatically add "to Hiveminder.com" addrs
-
-=head2 VERSION
-
-version 0.004
-
-=cut
-
-our $VERSION = '0.004';
-
-=head1 DESCRIPTION
-
-Hiveminder (L<http://hiveminder.com>) offers Pro customers the ability to
-assign tasks to anybody with an email address, even if they don't already use
-Hiveminder.  With a Hiveminder Pro account, you get a "secret."  Then, to
-assign a task to C<bob@example.com>, you would send mail to
-C<bob@example.com.secret.with.hm>.
-
-This plugin makes every entry in your address book appear to have an extra
-email address that will send to the C<with.hm> assignment address.
-
-=head1 CONFIGURATION
-
-First, you have to add the plugin to your Addex configuration file's top
-section:
-
-  plugin = App::Addex::Plugin::Hiveminder
-
-Then you'll need to setup at least a "secret" variable, which is your
-assign-by-email secret from your Hiveminder Pro account.
-
-  [App::Addex::Plugin::Hiveminder]
-  secret = closetdiscodancer
-
-With that done, every Entry in your AddressBook will now have an additional
-EmailAddress.  It will C<receive> but not C<send>, will be based on the email
-address of the Entry's default address, and will have the label "todo."
-
-To use a label other than "todo" specify a value for C<todo_label> in the
-plugin configuration.
-
-To specify that an entry's task assignment address should be built on an
-address other than its default address, specify the label of the address to use
-in that entry's C<todos_to> field.  Alternately, if the C<todos_to> begins and
-ends with a slash, it will be treated as a regex and matched against the
-entry's addresses.
-
-So, by way of example, if an address has these addresses:
-
-  - home : alfa@example.com
-  - other: bravo@example.com
-  - work : charlie@example.com
-
-The todo address will be C<alfa@example.com.secret.with.hm>.  If C<todos_to>
-were C<other>, the todo address would be C<bravo@example.com.secret.with.hm>.
-If C<todos_to> were C</charlie/>, it would be
-c<charlie@example.com.secret.with.hm>.
-
-If the entry had an address with the label "todo," no address will be inserted
-into the returned list.  If the entry had an address with the label "todo-via"
-it will be used to form the todo address, and will be suppressed from output.
-This is useful if your contact uses a specific address only for his
-Hiveminder account, as the recipient of a C<with.hm> request cannot accept the
-request to a different address.
-
-If the entry has a "skip_hiveminder" field, this plugin will leave it alone.
-
-=cut
 
 sub _form_addr {
   my ($mixin, $addr, $secret) = @_;
@@ -144,7 +79,7 @@ sub import {
       label   => $arg{todo_label},
       sends   => 0,
     });
-    
+
     return @emails;
   };
 
@@ -155,23 +90,86 @@ sub import {
   });
 }
 
+1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+App::Addex::Plugin::Hiveminder - automatically add "to Hiveminder.com" addrs
+
+=head1 VERSION
+
+version 0.005
+
+=head1 DESCRIPTION
+
+Hiveminder (L<http://hiveminder.com>) offers Pro customers the ability to
+assign tasks to anybody with an email address, even if they don't already use
+Hiveminder.  With a Hiveminder Pro account, you get a "secret."  Then, to
+assign a task to C<bob@example.com>, you would send mail to
+C<bob@example.com.secret.with.hm>.
+
+This plugin makes every entry in your address book appear to have an extra
+email address that will send to the C<with.hm> assignment address.
+
+=head1 CONFIGURATION
+
+First, you have to add the plugin to your Addex configuration file's top
+section:
+
+  plugin = App::Addex::Plugin::Hiveminder
+
+Then you'll need to setup at least a "secret" variable, which is your
+assign-by-email secret from your Hiveminder Pro account.
+
+  [App::Addex::Plugin::Hiveminder]
+  secret = closetdiscodancer
+
+With that done, every Entry in your AddressBook will now have an additional
+EmailAddress.  It will C<receive> but not C<send>, will be based on the email
+address of the Entry's default address, and will have the label "todo."
+
+To use a label other than "todo" specify a value for C<todo_label> in the
+plugin configuration.
+
+To specify that an entry's task assignment address should be built on an
+address other than its default address, specify the label of the address to use
+in that entry's C<todos_to> field.  Alternately, if the C<todos_to> begins and
+ends with a slash, it will be treated as a regex and matched against the
+entry's addresses.
+
+So, by way of example, if an address has these addresses:
+
+  - home : alfa@example.com
+  - other: bravo@example.com
+  - work : charlie@example.com
+
+The todo address will be C<alfa@example.com.secret.with.hm>.  If C<todos_to>
+were C<other>, the todo address would be C<bravo@example.com.secret.with.hm>.
+If C<todos_to> were C</charlie/>, it would be
+c<charlie@example.com.secret.with.hm>.
+
+If the entry had an address with the label "todo," no address will be inserted
+into the returned list.  If the entry had an address with the label "todo-via"
+it will be used to form the todo address, and will be suppressed from output.
+This is useful if your contact uses a specific address only for his
+Hiveminder account, as the recipient of a C<with.hm> request cannot accept the
+request to a different address.
+
+If the entry has a "skip_hiveminder" field, this plugin will leave it alone.
+
 =head1 AUTHOR
 
-Ricardo SIGNES, C<< <rjbs@cpan.org> >>
+Ricardo SIGNES <rjbs@cpan.org>
 
-=head1 BUGS
+=head1 COPYRIGHT AND LICENSE
 
-Please report any bugs or feature requests through the web interface at
-L<http://rt.cpan.org>.  I will be notified, and then you'll automatically be
-notified of progress on your bug as I make changes.
+This software is copyright (c) 2008 by Ricardo SIGNES.
 
-=head1 COPYRIGHT
-
-Copyright 2008 Ricardo Signes, all rights reserved.
-
-This program is free software; you may redistribute it and/or modify it
-under the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-1;
