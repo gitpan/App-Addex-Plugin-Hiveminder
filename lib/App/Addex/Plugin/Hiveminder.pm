@@ -3,7 +3,7 @@ use warnings;
 
 package App::Addex::Plugin::Hiveminder;
 {
-  $App::Addex::Plugin::Hiveminder::VERSION = '0.005';
+  $App::Addex::Plugin::Hiveminder::VERSION = '0.006';
 }
 use 5.006; # our
 use Sub::Install;
@@ -102,9 +102,12 @@ App::Addex::Plugin::Hiveminder - automatically add "to Hiveminder.com" addrs
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 DESCRIPTION
+
+B<Achtung!>  I no longer use Hiveminder, so no longer use this plugin.  If you
+use it, consider adopting it.
 
 Hiveminder (L<http://hiveminder.com>) offers Pro customers the ability to
 assign tasks to anybody with an email address, even if they don't already use
